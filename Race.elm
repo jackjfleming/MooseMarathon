@@ -4,7 +4,7 @@
 import Html exposing (Html)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Time exposing (Time, second)
+import AnimationFrame
 import Random
 
 
@@ -26,15 +26,14 @@ type alias Model =
     ,fieldWidth : Int
     ,playerHeight : Int
     ,playerWidth : Int
-    ,currentTime : Time
-    ,orangePosition : Int
-    ,redPosition : Int
-    ,yellowPosition : Int
-    ,greenPosition : Int
-    ,bluePosition : Int
-    ,indigoPosition : Int
-    ,violetPosition: Int
-    ,whitePosition : Int
+    ,orangePosition : Float
+    ,redPosition : Float
+    ,yellowPosition : Float
+    ,greenPosition : Float
+    ,bluePosition : Float
+    ,indigoPosition : Float
+    ,violetPosition: Float
+    ,whitePosition : Float
   }
 
 type alias Racer =
@@ -45,12 +44,12 @@ type alias Racer =
 
 init : (Model, Cmd Msg)
 init =
-  (Model 300 100 "#573B0C" "#8B5F14" 10 10 10 0 0 0 0 0 0 0 0 0, Cmd.none)
+  (Model 300 100 "#573B0C" "#8B5F14" 10 10 10 0 0 0 0 0 0 0 0, Cmd.none)
 
 -- UPDATE
 
 type Msg
-  = Tick Time
+  = Tick Float
   | NewOrangePosition Int
   | NewRedPosition Int
   | NewYellowPosition Int
@@ -68,34 +67,36 @@ update msg model =
       (model, Random.generate NewOrangePosition (Random.int 1 6))
 
     NewOrangePosition orangeRoll ->
-      ({model | orangePosition = model.orangePosition + orangeRoll}, Random.generate NewRedPosition (Random.int 1 6))
+      ({model | orangePosition = model.orangePosition + toFloat orangeRoll/6}, Random.generate NewRedPosition (Random.int 1 6))
 
     NewRedPosition redRoll ->
-      ({model | redPosition = model.redPosition + redRoll}, Random.generate NewYellowPosition (Random.int 1 6))
+      ({model | redPosition = model.redPosition + toFloat redRoll/6}, Random.generate NewYellowPosition (Random.int 1 6))
 
     NewYellowPosition yellowRoll ->
-      ({model | yellowPosition = model.yellowPosition + yellowRoll}, Random.generate NewGreenPosition (Random.int 1 6))
+      ({model | yellowPosition = model.yellowPosition + toFloat yellowRoll/6}, Random.generate NewGreenPosition (Random.int 1 6))
 
     NewGreenPosition greenRoll ->
-      ({model | greenPosition = model.greenPosition + greenRoll}, Random.generate NewBluePosition (Random.int 1 6))
+      ({model | greenPosition = model.greenPosition + toFloat greenRoll/6}, Random.generate NewBluePosition (Random.int 1 6))
 
     NewBluePosition blueRoll ->
-      ({model | bluePosition = model.bluePosition + blueRoll}, Random.generate NewIndigoPosition (Random.int 1 6))
+      ({model | bluePosition = model.bluePosition + toFloat blueRoll/6}, Random.generate NewIndigoPosition (Random.int 1 6))
 
     NewIndigoPosition indigoRoll ->
-      ({model | indigoPosition = model.indigoPosition + indigoRoll}, Random.generate NewVioletPosition (Random.int 1 6))
+      ({model | indigoPosition = model.indigoPosition + toFloat indigoRoll/6}, Random.generate NewVioletPosition (Random.int 1 6))
 
     NewVioletPosition violetRoll ->
-      ({model | violetPosition = model.violetPosition + violetRoll}, Random.generate NewWhitePosition (Random.int 1 6))
+      ({model | violetPosition = model.violetPosition + toFloat violetRoll/6}, Random.generate NewWhitePosition (Random.int 1 6))
 
     NewWhitePosition whiteRoll ->
-      ({model | whitePosition = model.whitePosition + whiteRoll}, Cmd.none)
+      ({model | whitePosition = model.whitePosition + toFloat whiteRoll/6}, Cmd.none)
 
 -- SUBSCRIPTIONS
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every second Tick
+  if model.orangePosition < 290 && model.redPosition < 290 && model.yellowPosition < 290 && model.greenPosition < 290 && model.bluePosition < 290 && model.indigoPosition < 290 && model.violetPosition < 290 && model.whitePosition < 290
+  then AnimationFrame.diffs Tick
+  else Sub.none
 
 -- VIEW
 
