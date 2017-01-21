@@ -33,10 +33,15 @@ type alias Model =
     ,greenPosition : Int
     ,bluePosition : Int
     ,indigoPosition : Int
-    ,violetPosition : Int
+    ,violetPosition: Int
     ,whitePosition : Int
   }
 
+type alias Racer =
+  {name : String
+   ,color: String
+   ,position: Int
+  }
 
 init : (Model, Cmd Msg)
 init =
@@ -69,19 +74,19 @@ update msg model =
       ({model | redPosition = model.redPosition + redRoll}, Random.generate NewYellowPosition (Random.int 1 6))
 
     NewYellowPosition yellowRoll ->
-      ({model | yellowPosition = model.yellowPosition + yellowRoll}, Random.generate NewGreenPosition (Random.int 1 8))
+      ({model | yellowPosition = model.yellowPosition + yellowRoll}, Random.generate NewGreenPosition (Random.int 1 6))
 
     NewGreenPosition greenRoll ->
-      ({model | greenPosition = model.greenPosition + greenRoll}, Random.generate NewBluePosition (Random.int 3 6))
+      ({model | greenPosition = model.greenPosition + greenRoll}, Random.generate NewBluePosition (Random.int 1 6))
 
     NewBluePosition blueRoll ->
-      ({model | bluePosition = model.bluePosition + blueRoll}, Random.generate NewIndigoPosition (Random.int 0 10))
+      ({model | bluePosition = model.bluePosition + blueRoll}, Random.generate NewIndigoPosition (Random.int 1 6))
 
     NewIndigoPosition indigoRoll ->
-      ({model | indigoPosition = model.indigoPosition + indigoRoll}, Random.generate NewVioletPosition (Random.int 5 5))
+      ({model | indigoPosition = model.indigoPosition + indigoRoll}, Random.generate NewVioletPosition (Random.int 1 6))
 
     NewVioletPosition violetRoll ->
-      ({model | violetPosition = model.violetPosition + violetRoll}, Random.generate NewWhitePosition (Random.int -20 20))
+      ({model | violetPosition = model.violetPosition + violetRoll}, Random.generate NewWhitePosition (Random.int 1 6))
 
     NewWhitePosition whiteRoll ->
       ({model | whitePosition = model.whitePosition + whiteRoll}, Cmd.none)
