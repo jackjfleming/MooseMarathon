@@ -1,7 +1,8 @@
 -- Read more about this program in the official Elm guide:
 -- https://guide.elm-lang.org/architecture/effects/time.html
 
-import Html exposing (Html)
+import Html exposing (Html, button, div)
+import Html.Events exposing (onClick)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import AnimationFrame
@@ -58,6 +59,7 @@ type Msg
   | NewIndigoPosition Int
   | NewVioletPosition Int
   | NewWhitePosition Int
+  | Reset
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -90,6 +92,9 @@ update msg model =
     NewWhitePosition whiteRoll ->
       ({model | whitePosition = model.whitePosition + toFloat whiteRoll/6}, Cmd.none)
 
+    Reset ->
+      (Model 300 100 "#573B0C" "#8B5F14" 10 10 10 0 0 0 0 0 0 0 0, Cmd.none)
+
 -- SUBSCRIPTIONS
 
 subscriptions : Model -> Sub Msg
@@ -111,6 +116,7 @@ view model =
     playerWidthString = toString model.playerWidth
     fieldColor1 = model.fieldColor1
     fieldColor2 = model.fieldColor2
+
     orangePosition = toString model.orangePosition
     redPosition = toString model.redPosition
     yellowPosition = toString model.yellowPosition
@@ -120,7 +126,6 @@ view model =
     violetPosition = toString model.violetPosition
     whitePosition = toString model.whitePosition
   in
-
   svg
     [ version "1.1", x "0", y "0", viewBox "0 0 400 400"
     ]
